@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download Installomator.sh
         run: |
@@ -21,6 +21,9 @@ jobs:
         run: |
           sed -i.bak 's/^DEBUG=1/DEBUG=0/' Installomator.sh
 
+      - name: Pull Latest Changes
+        run: git pull origin main
+
       - name: Commit Changes
         run: |
           git config --global user.name "github-actions"
@@ -28,3 +31,5 @@ jobs:
           git add Installomator.sh
           git commit -m "Updated DEBUG to 0 in Installomator.sh"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
