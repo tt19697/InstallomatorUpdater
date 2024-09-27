@@ -1,0 +1,30 @@
+name: Update Installomator
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Runs daily at 3 AM
+  workflow_dispatch:      # Manual trigger
+
+jobs:
+  update-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Download Installomator.sh
+        run: |
+          curl -o Installomator.sh https://raw.githubusercontent.com/Installomator/Installomator/refs/heads/main/Installomator.sh
+
+      - name: Modify DEBUG=1 to DEBUG=0
+        run: |
+          sed -i.bak 's/^DEBUG=1/DEBUG=0/' Installomator.sh
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add Installomator.sh
+          git commit -m "Updated DEBUG to 0 in Installomator.sh"
+          git push
